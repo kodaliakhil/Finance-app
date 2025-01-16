@@ -1,8 +1,9 @@
 "use strict";
 const sequelize = require("sequelize");
 const { DataTypes } = require("sequelize");
-module.exports = sequelize.define(
-  "User",
+
+const Wallet = sequelize.define(
+  "Wallet",
   {
     id: {
       allowNull: false,
@@ -10,14 +11,9 @@ module.exports = sequelize.define(
       primaryKey: true,
       type: DataTypes.INTEGER,
     },
-    firstName: {
-      type: DataTypes.STRING,
-    },
-    lastName: {
-      type: DataTypes.STRING,
-    },
-    email: {
-      type: DataTypes.STRING,
+    balance: {
+      type: DataTypes.DECIMAL(10, 2),
+      defaultValue: 0,
     },
     createdAt: {
       allowNull: false,
@@ -35,6 +31,12 @@ module.exports = sequelize.define(
   {
     paranoid: true,
     freezeTableName: true,
-    modelName: "User",
+    modelName: "Wallet",
   }
 );
+
+Wallet.associate = function (models) {
+  Wallet.belongsTo(models.User, { foreignKey: "userId" });
+};
+
+module.exports = Wallet;
