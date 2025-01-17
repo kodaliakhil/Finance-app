@@ -1,10 +1,8 @@
-"use strict";
+("use strict");
 const sequelize = require("sequelize");
 const { DataTypes } = require("sequelize");
-const user = require("./user");
-
-const Wallet = sequelize.define(
-  "Wallet",
+const Category = sequelize.define(
+  "Category",
   {
     id: {
       allowNull: false,
@@ -14,26 +12,15 @@ const Wallet = sequelize.define(
     },
     name: {
       type: DataTypes.STRING,
+      allowNull: false,
     },
-    balance: {
-      type: DataTypes.DECIMAL(10, 2),
-      defaultValue: 0,
+    description: {
+      type: DataTypes.STRING,
     },
     userId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
       references: {
         model: "User",
-        key: "id",
-      },
-      onUpdate: "CASCADE",
-      onDelete: "CASCADE",
-    },
-    parentWalletId: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-      references: {
-        model: "Wallet",
         key: "id",
       },
       onUpdate: "CASCADE",
@@ -55,15 +42,8 @@ const Wallet = sequelize.define(
   {
     paranoid: true,
     freezeTableName: true,
-    modelName: "Wallet",
+    modelName: "Category",
   }
 );
 
-Wallet.associate = function (models) {
-  Wallet.belongsTo(models.User, { foreignKey: "userId" });
-  user.hasMany(Wallet, { foreignKey: "userId" });
-  Wallet.hasMany(Wallet, { foreignKey: "parentWalletId" });
-};
-
-
-module.exports = Wallet;
+module.exports = Category;

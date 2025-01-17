@@ -1,8 +1,8 @@
-"use strict";
+("use strict");
 const sequelize = require("sequelize");
 const { DataTypes } = require("sequelize");
-module.exports = sequelize.define(
-  "User",
+const Transaction = sequelize.define(
+  "Transaction",
   {
     id: {
       allowNull: false,
@@ -10,16 +10,30 @@ module.exports = sequelize.define(
       primaryKey: true,
       type: DataTypes.INTEGER,
     },
-    firstName: {
-      type: DataTypes.STRING,
+    walletId: {
+      type: DataTypes.NUMBER,
+      allowNull: false,
+      references: {
+        model: "Wallet",
+        key: "id",
+      },
+      onUpdate: "CASCADE",
+      onDelete: "CASCADE",
     },
-    lastName: {
-      type: DataTypes.STRING,
+    amount: {
+      type: DataTypes.DECIMAL,
+      allowNull: false,
     },
-    email: {
+    to: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
+    },
+    transactionType: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    description: {
+      type: DataTypes.STRING,
     },
     createdAt: {
       allowNull: false,
@@ -37,6 +51,8 @@ module.exports = sequelize.define(
   {
     paranoid: true,
     freezeTableName: true,
-    modelName: "User",
+    modelName: "Transaction",
   }
 );
+
+module.exports = Transaction;
