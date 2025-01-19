@@ -1,6 +1,8 @@
 ("use strict");
-const sequelize = require("sequelize");
-const { DataTypes } = require("sequelize");
+import { DataTypes } from "sequelize";
+import sequelize from "../../config/database";
+import Wallet from "./wallet";
+import Category from "./category";
 const Transaction = sequelize.define(
   "Transaction",
   {
@@ -11,14 +13,12 @@ const Transaction = sequelize.define(
       type: DataTypes.INTEGER,
     },
     walletId: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: false,
       references: {
         model: "Wallet",
         key: "id",
       },
-      onUpdate: "CASCADE",
-      onDelete: "CASCADE",
     },
     amount: {
       type: DataTypes.DECIMAL,
@@ -31,6 +31,14 @@ const Transaction = sequelize.define(
     transactionType: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    categoryId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: "Category",
+        key: "id",
+      },
     },
     description: {
       type: DataTypes.STRING,
@@ -51,8 +59,14 @@ const Transaction = sequelize.define(
   {
     paranoid: true,
     freezeTableName: true,
-    modelName: "Transaction",
+    tableName: "Transaction",
   }
 );
 
-module.exports = Transaction;
+Transaction.belongsTo(Wallet, { foreignKey: "walletId" });
+Wallet.hasMany(Transaction, { foreignKey: "walletId" });
+
+Transaction.belongsTo(Category, { foreignKey: "categoryId" });
+
+
+export default Transaction;

@@ -1,7 +1,9 @@
 "use strict";
-const sequelize = require("sequelize");
-const { DataTypes } = require("sequelize");
-module.exports = sequelize.define(
+import { DataTypes } from 'sequelize';
+import sequelize from '../../config/database';
+import Wallet from './wallet';
+
+const User = sequelize.define(
   "User",
   {
     id: {
@@ -38,5 +40,8 @@ module.exports = sequelize.define(
     paranoid: true,
     freezeTableName: true,
     modelName: "User",
+    schema: "public",
   }
 );
+
+export default User

@@ -1,7 +1,7 @@
 "use strict";
-const sequelize = require("sequelize");
-const { DataTypes } = require("sequelize");
-const user = require("./user");
+import { DataTypes } from "sequelize";
+import sequelize from "../../config/database";
+import User from "./user";
 
 const Wallet = sequelize.define(
   "Wallet",
@@ -26,8 +26,6 @@ const Wallet = sequelize.define(
         model: "User",
         key: "id",
       },
-      onUpdate: "CASCADE",
-      onDelete: "CASCADE",
     },
     parentWalletId: {
       type: DataTypes.INTEGER,
@@ -36,8 +34,6 @@ const Wallet = sequelize.define(
         model: "Wallet",
         key: "id",
       },
-      onUpdate: "CASCADE",
-      onDelete: "CASCADE",
     },
     createdAt: {
       allowNull: false,
@@ -55,15 +51,15 @@ const Wallet = sequelize.define(
   {
     paranoid: true,
     freezeTableName: true,
-    modelName: "Wallet",
+    modelName: "wallet",
   }
 );
 
-Wallet.associate = function (models) {
-  Wallet.belongsTo(models.User, { foreignKey: "userId" });
-  user.hasMany(Wallet, { foreignKey: "userId" });
-  Wallet.hasMany(Wallet, { foreignKey: "parentWalletId" });
-};
+ 
+Wallet.belongsTo(User, { foreignKey: "userId" });
+User.hasMany(Wallet, { foreignKey: "userId" });
 
+Wallet.hasMany(Wallet, { foreignKey: "parentWalletId", as: "childWallets" });
+Wallet.belongsTo(Wallet, { foreignKey: "parentWalletId", as: "parentWallet" });
 
-module.exports = Wallet;
+export default Wallet;

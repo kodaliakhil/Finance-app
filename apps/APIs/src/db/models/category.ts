@@ -1,6 +1,7 @@
 ("use strict");
-const sequelize = require("sequelize");
-const { DataTypes } = require("sequelize");
+import { DataTypes } from "sequelize";
+import sequelize from "../../config/database";
+import User from "./user";
 const Category = sequelize.define(
   "Category",
   {
@@ -23,8 +24,7 @@ const Category = sequelize.define(
         model: "User",
         key: "id",
       },
-      onUpdate: "CASCADE",
-      onDelete: "CASCADE",
+      
     },
     createdAt: {
       allowNull: false,
@@ -42,8 +42,13 @@ const Category = sequelize.define(
   {
     paranoid: true,
     freezeTableName: true,
-    modelName: "Category",
+    tableName: "Category",
+    schema: "public",
   }
 );
 
-module.exports = Category;
+Category.belongsTo(User, { foreignKey: "userId" });
+User.hasMany(Category, { foreignKey: "userId" });
+
+
+export default Category;
